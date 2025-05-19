@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wanderlust</title>
+  </head>
+  <body>
+    <h3>Listing Details:</h3>
+    <ul>
+      <li>Title: <%= listing.title %></li>
+      <li>Description: <%= listing.description %></li>
+      <li>Price: &#8377; <%= listing.price.toLocaleString("en-IN") %></li>
+      <li>Location: <%= listing.location %></li>
+      <li>Contact: <%= listing.country %></li>
+    </ul>
+    <br />
+    <a href="/listings/<%= listing._id %>/edit">Edit this Listing</a> <br />
+    <br />
+    <form
+      method="POST"
+      action="/listings/<%= listing._id %>?_method=DELETE"
+      onsubmit="return confirm('Are you sure you want to delete this listing?');"
+    >
+      <button type="submit">Delete</button>
+    </form>
+    <br />
+  </body>
+</html>
