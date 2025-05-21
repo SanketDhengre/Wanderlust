@@ -111,7 +111,7 @@ body {
 
 /* NEW PAGE */
 
-.add-btn, .edit-btn {
+.add-btn, .edit-btn, .delete-btn {
   background-color: #fe424d !important;
   border: none !important;
 }
