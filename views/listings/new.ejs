@@ -1,47 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wanderlust</title>
-  </head>
-  <body>
-    <h1>Create New Listing</h1>
-    <form method="POST" action="/listings">
-      <input name="listing[title]" type="text" placeholder="Title" required />
-      <br /><br />
-      <textarea
-        name="listing[description]"
-        type="text"
-        placeholder="Description"
-        required
-      ></textarea>
-      <br /><br />
-      <input
-        name="listing[image]"
-        type="text"
-        placeholder="Image URL"
-        required
-      />
-      <br /><br />
-      <input name="listing[price]" type="number" placeholder="Price" required />
-      <br /><br />
-      <input
-        name="listing[country]"
-        type="text"
-        placeholder="Country"
-        required
-      />
-      <br /><br />
-      <input
-        name="listing[location]"
-        type="text"
-        placeholder="Location"
-        required
-      />
-      <br /><br />
+<% layout("/layouts/boilerplate.ejs") %>
 
-      <button type="submit">Add</button>
+<div class="row">
+  <div class="col-8 offset-2">
+    <h1>Create New Listing</h1>
+    <br />
+    <form method="POST" action="/listings">
+      <div class="mb-3">
+        <label for="title" class="form-label">Title:</label>
+        <input
+          name="listing[title]"
+          type="text"
+          class="form-control"
+          placeholder="e.g. Cozy Beachfront Cottage"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description:</label>
+        <textarea
+          name="listing[description]"
+          type="text"
+          class="form-control"
+          placeholder="Describe your property, amenities, and highlights"
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="image" class="form-label">Image URL:</label>
+        <input
+          name="listing[image]"
+          type="text"
+          class="form-control"
+          placeholder="Paste an image URL (e.g. https://...)"
+        />
+      </div>
+
+      <div class="row">
+        <div class="mb-3 col-md-4">
+          <label for="price" class="form-label">Price:</label>
+          <input
+            name="listing[price]"
+            type="number"
+            class="form-control"
+            placeholder="e.g. 1500"
+          />
+        </div>
+
+        <div class="mb-3 col-md-8">
+          <label for="country" class="form-label">Country:</label>
+          <input
+            name="listing[country]"
+            type="text"
+            class="form-control"
+            placeholder="e.g. United States"
+          />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="location" class="form-label">Location:</label>
+        <input
+          name="listing[location]"
+          type="text"
+          class="form-control"
+          placeholder="e.g. Malibu"
+        />
+      </div>
+
+      <button class="btn btn-dark add-btn" type="submit">Add</button>
     </form>
-  </body>
-</html>
+    <br />
+    <br />
+  </div>
+</div>
