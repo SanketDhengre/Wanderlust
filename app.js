@@ -4,9 +4,13 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
-app.use(methodOverride("_method"));
 const ejsMate = require("ejs-mate");
+const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
+const {listingSchema, reviewSchema} = require("./schema.js");
+const Review = require("./models/review.js");
 
+app.use(methodOverride("_method"));
 const MONGO_URL = "mongodb://127.0.0.1:27017/Wanderlust";
 
 main()
@@ -31,6 +35,26 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+const validateListing = (req, res, next) => {
+  const { error } = listingSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg);
+  } else {
+    next();
+  }
+}
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg);
+  } else {
+    next();
+  }
+}
+
 //Index Route
 app.get("/listings", async (req, res) => {
   const allListings = await Listing.find({});
@@ -45,7 +69,7 @@ app.get("/listings/new", (req, res) => {
 //Show Route
 app.get("/listings/:id", async (req, res) => {
   const { id } = req.params;
-  const listing = await Listing.findById(id);
+  const listing = await Listing.findById(id).populate("reviews");
   res.render("listings/show", { listing });
 });
 
@@ -76,6 +100,35 @@ app.delete("/listings/:id", async (req, res) => {
   await Listing.findByIdAndDelete(id);
   res.redirect("/listings");
 });
+
+//REVIEWS
+//POST review Route
+
+app.post("/listings/:id/reviews", validateReview, wrapAsync (async (req, res) => {
+  let listing = await Listing.findById(req.params.id);
+  let newReview = new Review(req.body.review);
+
+  listing.reviews.push(newReview);
+
+  await newReview.save();
+  await listing.save();
+
+  console.log("Review saved to database");
+  res.send("new review added successfully");
+
+  res.redirect(`/listings/${listing._id}`);
+}));
+
+//DELETE review Route
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req, res) => {
+
+  let { id, reviewId } = req.params;
+  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+  await Review.findByIdAndDelete(reviewId);
+
+  res.redirect(`/listings/${id}`);
+
+}))
 
 // app.get("/testListings", async (req, res) => {
 //     let sampleListing = new Listing({
