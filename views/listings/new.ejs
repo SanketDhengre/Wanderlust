@@ -4,7 +4,7 @@
   <div class="col-8 offset-2">
     <h1>Create New Listing</h1>
     <br />
-    <form method="POST" action="/listings">
+    <form method="POST" action="/listings" novalidate class="needs-validation">
       <div class="mb-3">
         <label for="title" class="form-label">Title:</label>
         <input
@@ -12,8 +12,12 @@
           type="text"
           class="form-control"
           placeholder="e.g. Cozy Beachfront Cottage"
+          required
         />
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please fill out this field</div>
       </div>
+
 
       <div class="mb-3">
         <label for="description" class="form-label">Description:</label>
@@ -22,7 +26,10 @@
           type="text"
           class="form-control"
           placeholder="Describe your property, amenities, and highlights"
+          required
         ></textarea>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please fill out this field</div>
       </div>
 
       <div class="mb-3">
@@ -43,7 +50,10 @@
             type="number"
             class="form-control"
             placeholder="e.g. 1500"
+            required
           />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please fill out this field</div>
         </div>
 
         <div class="mb-3 col-md-8">
@@ -53,7 +63,10 @@
             type="text"
             class="form-control"
             placeholder="e.g. United States"
+            required
           />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please fill out this field</div>
         </div>
       </div>
 
@@ -64,7 +77,10 @@
           type="text"
           class="form-control"
           placeholder="e.g. Malibu"
+          required
         />
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please fill out this field</div>
       </div>
 
       <button class="btn btn-dark add-btn" type="submit">Add</button>

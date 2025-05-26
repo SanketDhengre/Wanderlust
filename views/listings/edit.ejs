@@ -3,7 +3,12 @@
 <div class="row">
   <div class="col-8 offset-2">
     <h1>Edit Listing</h1>
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT">
+    <form
+      method="POST"
+      action="/listings/<%= listing._id %>?_method=PUT"
+      class="needs-validation"
+      novalidate
+    >
       <div class="mb-3">
         <label for="title" class="form-label">Title:</label>
         <input
@@ -14,6 +19,8 @@
           placeholder="e.g. Cozy Beachfront Cottage"
           required
         />
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a title.</div>
       </div>
 
       <div class="mb-3">
@@ -23,7 +30,11 @@
           class="form-control"
           placeholder="Describe your property, amenities, and highlights"
           required
-        ><%= listing.description %></textarea>
+        >
+<%= listing.description %></textarea
+        >
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a description.</div>
       </div>
 
       <div class="mb-3">
@@ -36,6 +47,8 @@
           placeholder="Paste an image URL (e.g. https://...)"
           required
         />
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide an image URL.</div>
       </div>
 
       <div class="row">
@@ -49,6 +62,8 @@
             placeholder="e.g. 1500"
             required
           />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please provide a price.</div>
         </div>
         <div class="mb-3 col-md-8">
           <label for="country" class="form-label">Country:</label>
@@ -60,6 +75,8 @@
             placeholder="e.g. United States"
             required
           />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please provide a country.</div>
         </div>
       </div>
 
@@ -73,9 +90,12 @@
           placeholder="e.g. Malibu"
           required
         />
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a location.</div>
       </div>
 
       <button class="btn btn-dark edit-btn" type="submit">Edit</button>
     </form>
   </div>
 </div>
+<script src="/js/script.js"></script> 
