@@ -1,21 +1,9 @@
 const express = require("express");
 const wrapAsync = require("../utils/wrapAsync");
 const router = express.Router();
-const { listingSchema } = require("../schema.js");
-const ExpressError = require("../utils/ExpressError.js");
 
 const Listing = require("../models/listing.js");
-const { isLoggedIn } = require("../middleware.js");
-
-const validateListing = (req, res, next) => {
-  const { error } = listingSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, msg);
-  } else {
-    next();
-  }
-};
+const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 
 //Index Route
 router.get("/", async (req, res) => {
@@ -31,11 +19,15 @@ router.get("/new", isLoggedIn, (req, res) => {
 //Show Route
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const listing = await Listing.findById(id).populate("reviews");
+  const listing = await Listing.findById(id)
+    .populate({ path: "reviews", populate: { path: "author" } })
+    .populate("owner");
   if (!listing) {
     req.flash("error", "Listing not found");
     return res.redirect("/listings");
   }
+
+  console.log(listing);
   res.render("listings/show", { listing });
 });
 
@@ -45,6 +37,8 @@ router.post(
   validateListing,
   wrapAsync(async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
+
+    newListing.owner = req.user._id; // Set the owner to the currently logged-in user
     await newListing.save();
     req.flash("success", "New listing created successfully!");
     res.redirect("/listings");
@@ -54,6 +48,7 @@ router.post(
 //Edit Route
 router.get(
   "/:id/edit",
+  isOwner, // Ensure the user is the owner of the listing
   isLoggedIn,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
@@ -70,6 +65,7 @@ router.get(
 router.put(
   "/:id",
   isLoggedIn,
+  isOwner, // Ensure the user is the owner of the listing
   validateListing,
   wrapAsync(async (req, res, next) => {
     const { id } = req.params;
@@ -83,6 +79,7 @@ router.put(
 router.delete(
   "/:id",
   isLoggedIn,
+  isOwner, // Ensure the user is the owner of the listing
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
