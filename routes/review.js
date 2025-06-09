@@ -4,7 +4,11 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const Review = require("../models/review.js");
 const Listing = require("../models/listing.js");
-const { validateReview, isLoggedIn, isReviewAuthor } = require("../middleware.js");
+const {
+  validateReview,
+  isLoggedIn,
+  isReviewAuthor,
+} = require("../middleware.js");
 
 //REVIEWS
 //POST review Route
@@ -18,7 +22,7 @@ router.post(
     let newReview = new Review(req.body.review);
 
     newReview.author = req.user._id; // Set the author to the currently logged-in user
-    console.log(newReview);
+    // console.log(newReview);
     listing.reviews.push(newReview);
 
     await newReview.save();

@@ -5,87 +5,46 @@ const router = express.Router();
 const Listing = require("../models/listing.js");
 const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 
+const listingController = require("../controllers/listings.js");
+
 //Index Route
-router.get("/", async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index", { allListings });
-});
+router.get(
+  "/",
+  wrapAsync(listingController.index) // Use the index method from the controller
+);
 
 // New Route
-router.get("/new", isLoggedIn, (req, res) => {
-  res.render("listings/new");
-});
+router.get("/new", isLoggedIn, listingController.renderNewForm);
 
 //Show Route
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const listing = await Listing.findById(id)
-    .populate({ path: "reviews", populate: { path: "author" } })
-    .populate("owner");
-  if (!listing) {
-    req.flash("error", "Listing not found");
-    return res.redirect("/listings");
-  }
-
-  console.log(listing);
-  res.render("listings/show", { listing });
-});
+router.get("/:id", wrapAsync(listingController.showListing));
 
 //Create Route
-router.post(
-  "/",
-  validateListing,
-  wrapAsync(async (req, res, next) => {
-    const newListing = new Listing(req.body.listing);
-
-    newListing.owner = req.user._id; // Set the owner to the currently logged-in user
-    await newListing.save();
-    req.flash("success", "New listing created successfully!");
-    res.redirect("/listings");
-  })
-);
+router.post("/", validateListing, wrapAsync(listingController.createListing));
 
 //Edit Route
 router.get(
   "/:id/edit",
   isOwner, // Ensure the user is the owner of the listing
-  isLoggedIn,
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id);
-    if (!listing) {
-      req.flash("error", "Listing not found");
-      return res.redirect("/listings");
-    }
-    res.render("listings/edit", { listing });
-  })
+  isLoggedIn, // Ensure the user is logged in before editing
+  wrapAsync(listingController.renderEditForm)
 );
 
 //Update Route
 router.put(
-  "/:id",
-  isLoggedIn,
+  "/:id",  
+  isLoggedIn,// Ensure the user is logged in before updating
   isOwner, // Ensure the user is the owner of the listing
-  validateListing,
-  wrapAsync(async (req, res, next) => {
-    const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-    req.flash("success", "Listing updated successfully!");
-    res.redirect(`/listings/${id}`);
-  })
+  validateListing, // Validate the listing data
+  wrapAsync(listingController.updateListing)
 );
 
 //Delete Route
 router.delete(
   "/:id",
-  isLoggedIn,
+  isLoggedIn, // Ensure the user is logged in before deleting
   isOwner, // Ensure the user is the owner of the listing
-  wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndDelete(id);
-    req.flash("success", "Listing deleted successfully!");
-    res.redirect("/listings");
-  })
+  wrapAsync(listingController.destroyListing)
 );
 
 module.exports = router;
