@@ -4,61 +4,25 @@ const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const passport = require("passport");
 const { saveRedirectUrl } = require("../middleware.js");
+const usersController = require("../controllers/users.js");
 
-router.get("/signup", (req, res) => {
-  res.render("users/signup");
-});
+router
+  .route("/signup")
+  .get(usersController.renderSignupForm) // Use the renderSignupForm controller function
+  .post(wrapAsync(usersController.signup)); // Use the signup controller function
 
-router.post(
-  "/signup",
-  wrapAsync(async (req, res) => {
-    try {
-      let { username, email, password } = req.body;
-      const newUser = new User({ email, username });
+router
+  .route("/login")
+  .get(usersController.renderLoginForm) // Use the renderLoginForm controller function
+  .post(
+    saveRedirectUrl, // Save the redirect URL before authentication
+    passport.authenticate("local", {
+      failureFlash: true,
+      failureRedirect: "/login",
+    }),
+    usersController.login // Use the login controller function
+  );
 
-      const registeredUser = await User.register(newUser, password);
-      console.log(registeredUser);
-      // Automatically log in the user after registration
-      req.login(registeredUser, (err) => {
-        if (err) {
-          return next(err);
-        }
-        req.flash("success", "Welcome to the Wanderlust!");
-        res.redirect("/listings");
-      });
-    } catch (e) {
-      req.flash("error", e.message);
-      res.redirect("/signup");
-    }
-  })
-);
-
-router.get("/login", (req, res) => {
-  res.render("users/login");
-});
-
-router.post(
-  "/login",
-  saveRedirectUrl, // Save the redirect URL before authentication
-  passport.authenticate("local", {
-    failureFlash: true,
-    failureRedirect: "/login",
-  }),
-  async (req, res) => {
-    req.flash("success", "Welcome back to Wanderlust!");
-    let redirectUrl = res.locals.redirectUrl || "/listings";
-    res.redirect(redirectUrl);
-  }
-);
-
-router.get("/logout", (req, res, next) => {
-  req.logout((err) => {
-    if (err) {  
-      return next(err);
-    }
-    req.flash("success", "Goodbye! Come back soon!");
-    res.redirect("/listings");
-  });
-});
+router.get("/logout", usersController.logout); // Use the logout controller function
 
 module.exports = router;
