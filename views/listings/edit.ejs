@@ -6,8 +6,9 @@
     <form
       method="POST"
       action="/listings/<%= listing._id %>?_method=PUT"
-      class="needs-validation"
       novalidate
+      class="needs-validation"
+      enctype="multipart/form-data"
     >
       <div class="mb-3">
         <label for="title" class="form-label">Title:</label>
@@ -38,14 +39,11 @@
       </div>
 
       <div class="mb-3">
-        <label for="image" class="form-label">Image URL:</label>
+        <label for="image" class="form-label">Upload New Image</label>
         <input
           name="listing[image]"
-          type="text"
+          type="file"
           class="form-control"
-          value="<%= listing.image && listing.image.url ? listing.image.url : listing.image %>"
-          placeholder="Paste an image URL (e.g. https://...)"
-          required
         />
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">Please provide an image URL.</div>
@@ -98,4 +96,4 @@
     </form>
   </div>
 </div>
-<script src="/js/script.js"></script> 
+<script src="/js/script.js"></script>
