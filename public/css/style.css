@@ -9,7 +9,6 @@ body {
   flex: 1;
 }
 
-
 /* NAVBAR */
 .navbar {
   height: 5rem;
@@ -111,7 +110,9 @@ body {
 
 /* NEW PAGE */
 
-.add-btn, .edit-btn, .delete-btn {
+.add-btn,
+.edit-btn,
+.delete-btn {
   background-color: #fe424d !important;
   border: none !important;
 }
@@ -128,4 +129,10 @@ show-img {
 .show-card {
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+
+/* MAP */
+#map {
+  height: 400px;
+  width: 80vh;
 }
