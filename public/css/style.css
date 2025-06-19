@@ -15,6 +15,44 @@ body {
   background-color: #ffffff;
 }
 
+.navbar .container-fluid { /* Ensure this is the main flex orchestrator */
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Left Group: Brand + Title */
+.navbar-brand {
+  flex-shrink: 0; /* Don't shrink brand */
+  /* margin-right: 0.5rem; /* Optional: space between brand and title */
+}
+.navbar-nav.web-title { /* This is the "WanderLust" title */
+  flex-grow: 0; /* Do not grow */
+  flex-shrink: 0; /* Don't shrink title */
+  margin-left: 0.5rem; /* Optional: space from brand */
+  margin-right: auto; /* KEY: Pushes .navbar-collapse and its contents to the right */
+  justify-content: flex-start; /* Align content to start */
+  text-align: left; /* Align text to left */
+}
+
+/* Collapsible area - on desktop, it's expanded and part of the flex layout */
+.navbar-collapse {
+  display: flex !important; /* Must be flex for desktop layout */
+  flex-grow: 1; /* Allow it to consume the space made available by web-title's margin-right: auto */
+  align-items: center;
+  /* text-align: center; /* This is for mobile when it's block layout, keep for that */
+}
+
+/* Center Group: Search Form, child of .navbar-collapse */
+.nav-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;  /* Pushes off from left content within .navbar-collapse */
+  margin-right: auto; /* Pushes off from right content within .navbar-collapse */
+  flex-shrink: 0; /* Don't let search bar shrink excessively */
+}
+
 .fa-compass {
   color: #fe424d;
   font-size: 2rem;
@@ -22,6 +60,15 @@ body {
 
 .nav-link {
   color: #222222 !important;
+}
+
+/* Right Group: Auth Links, child of .navbar-collapse */
+/* This targets the .navbar-nav holding auth links (assuming it's the last .navbar-nav in .navbar-collapse) */
+.navbar-collapse > .navbar-nav:last-child:not(.web-title) {
+  margin-left: auto; /* Pushes it to the far right of .navbar-collapse */
+  flex-grow: 0; /* Do not let it grow */
+  flex-shrink: 0; /* Do not let it shrink */
+  justify-content: flex-end; /* Align items within this nav to its end */
 }
 
 /* FOOTER */
@@ -134,5 +181,203 @@ show-img {
 /* MAP */
 #map {
   height: 400px;
-  width: 80vh;
+  width: 100vh;
+}
+
+#filter-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+#filters-container {
+  overflow: hidden;
+  flex: 1;
+  position: relative;
+}
+
+#filters {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+}
+
+.filter {
+  flex: 0 0 auto;
+  text-align: center;
+  margin-right: 2rem;
+  margin-top: 1rem;
+  opacity: 0.7;
+}
+
+.filter:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.filter p {
+  font-size: 0.8rem;
+}
+
+.filter a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tax-info {
+  display: none;
+}
+
+.scroll-btn {
+  background-color: #fff;
+  border: 0.1rem solid #cccccc;
+  border-radius: 50%;
+  color: #a6a6a6;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.scroll-btn.left-btn {
+  margin-right: 1rem;
+}
+
+.scroll-btn.right-btn {
+  margin-left: 1rem;
+}
+
+.tax-toggle {
+  border: 0.1rem solid #a6a6a6;
+  border-radius: 1rem;
+  height: 3rem;
+  padding: 1rem;
+  margin-left: 1rem;
+  display: flex;
+  margin-top: 0.9rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 767px) {
+  .dropdown {
+    display: none;
+  }
+
+  #web-title {
+    color: #fe424d !important;
+    font-size: 1.6rem !important;
+  }
+
+  .alert {
+    margin-top: 0.5rem !important;
+    font-size: 0.9rem;
+    padding: 0.6rem !important;
+  }
+
+  .btn-close {
+    padding: 0.9rem !important;
+  }
+
+  #responsive-registration {
+    display: inline;
+    margin: 1rem;
+  }
+
+  .navbar-collapse {
+    text-align: center; /* Keep for mobile collapsed state */
+    /* Reset flex properties for mobile collapsed state if they interfere */
+    display: block !important; /* Override desktop flex for collapsed view */
+    flex-grow: 0;
+  }
+
+  .nav-search {
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: -0.5rem;
+  }
+
+  .navbar-nav {
+    /* General .navbar-nav for mobile might need adjustments */
+    /* For example, if they are stacked */
+    flex-direction: column;
+  }
+
+  .navbar-nav.web-title {
+    margin-right: 0; /* Reset for mobile if needed */
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .container-fluid {
+    background-color: white;
+  }
+}
+
+.filter {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+
+/* Hide scrollbar for #filters-container, already styled above */
+/* #filters-container::-webkit-scrollbar {
+  display: none;
+} */
+
+.container {
+  max-width: 95%;
+}
+
+.map-click {
+  text-align: center;
+  margin-bottom: -1rem;
+}
+
+/* Navbar Search Styles */
+.nav-search .form-control.search-inp {
+  border-top-left-radius: 25px; /* Rounded left end */
+  border-bottom-left-radius: 25px;
+  border-top-right-radius: 0; /* Flat right end to connect to button */
+  border-bottom-right-radius: 0;
+  border-right: none; /* Remove border between input and button */
+  padding: 0.5rem 1.5rem; /* Vertical padding 0.5rem, Horizontal 1.5rem */
+  min-width: 350px; /* Adjust this value as needed for placeholder visibility */
+  font-size: 0.9rem; /* Slightly smaller font for a cleaner look */
+  /* Bootstrap's form-control class handles base styling and transitions */
+}
+
+.nav-search .form-control.search-inp:focus {
+  border-color: #fe424d; /* Brand color for focus */
+  box-shadow: 0 0 0 0.2rem rgba(254, 66, 77, 0.25); /* Brand color shadow */
+  z-index: 2; /* Ensures the focus shadow is above the adjacent button */
+}
+
+.nav-search .search-inp::placeholder {
+  color: #999; /* Softer placeholder text color */
+  opacity: 1; /* Ensure visibility in Firefox */
+  font-size: 0.9rem; /* Match input font size */
+}
+
+.nav-search .search-btn {
+  background-color: #fe424d;
+  color: white;
+  border: 1px solid #fe424d; /* Consistent border with background */
+  border-top-right-radius: 25px; /* Rounded right end */
+  border-bottom-right-radius: 25px;
+  border-top-left-radius: 0; /* Flat left end to connect to input */
+  border-bottom-left-radius: 0;
+  padding: 0.5rem 1rem; /* Match vertical padding of input, horizontal 1rem */
+  font-size: 0.9rem; /* Match input font size */
+  display: flex; /* For aligning icon and text */
+  align-items: center; /* Vertically center icon and text */
+  /* Bootstrap's .btn class handles base styling and transitions */
+}
+
+.nav-search .search-btn:hover {
+  background-color: #e0303a; /* Darker shade on hover */
+  border-color: #d3252f; /* Corresponding darker border */
+}
+
+.nav-search .search-btn i {
+  margin-right: 0.5rem; /* Space between icon and "Search" text */
 }

@@ -2,7 +2,7 @@
 
 <script>
   const mapToken = "<%= process.env.MAP_TOKEN %>";
-  const listing = "<%- JSON.stringify(listing) %>";
+  const listing = <%- JSON.stringify(listing) %>;
 </script>
 
 <div class="row">
@@ -21,6 +21,7 @@
       <p class="card-text">
         &#8377; <%= listing.price.toLocaleString("en-IN") %> /night
       </p>
+      <p class="card-text">Category: <%= listing.category %></p>
       <p class="card-text"><%= listing.location %></p>
       <p class="card-text"><%= listing.country %></p>
     </div>
@@ -161,5 +162,3 @@
 </div>
 
 <script src="/js/map.js"></script>
-
-<br />
