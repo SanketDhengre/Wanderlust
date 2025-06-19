@@ -21,7 +21,6 @@ router
 // New Route
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
-
 router.get("/filter/:id", wrapAsync(listingController.filter));
 router.get("/search", listingController.search);
 
@@ -43,6 +42,12 @@ router.get(
   isOwner, // Ensure the user is the owner of the listing
   isLoggedIn, // Ensure the user is logged in before editing
   wrapAsync(listingController.renderEditForm)
+);
+
+router.get(
+  "/:id/reservelisting",
+  isLoggedIn,
+  wrapAsync(listingController.reserveListing)
 );
 
 module.exports = router;

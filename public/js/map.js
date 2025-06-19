@@ -17,3 +17,6 @@ const marker = new mapboxgl.Marker({ color: "red" })
     )
   )
   .addTo(map);
+
+map.addControl(new mapboxgl.ScaleControl());
+map.addControl(new mapboxgl.NavigationControl());

@@ -40,7 +40,7 @@
 
       <div class="mb-3">
         Original Listing Image: <br />
-        <img src="<%= originalImageUrl %>" />
+        <img src="<%= originalImageUrl %>" class="edit-original-img" alt="Original Listing Image"/>
       </div>
 
       <div class="mb-3">
@@ -56,9 +56,8 @@
         <div class="row">
           <div class="col-md-6">
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="rooms"
-              name="listing[category]" value="Rooms" required
-              <%=listing.category==='Rooms' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="rooms"
+              name="listing[category]" value="Rooms" <%= listing.category.includes('Rooms') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="rooms"
@@ -67,9 +66,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="iconic-cities"
-              name="listing[category]" value="Iconic-Cities" required
-              <%=listing.category==='Iconic-Cities' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="iconic-cities"
+              name="listing[category]" value="Iconic-Cities" <%= listing.category.includes('Iconic-Cities') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="iconic-cities"
@@ -78,9 +76,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="mountains"
-              name="listing[category]" value="Mountains" required
-              <%=listing.category==='Mountains' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="mountains"
+              name="listing[category]" value="Mountains" <%= listing.category.includes('Mountains') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="mountains"
@@ -89,9 +86,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="castles"
-              name="listing[category]" value="Castles" required
-              <%=listing.category==='Castles' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="castles"
+              name="listing[category]" value="Castles" <%= listing.category.includes('Castles') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="castles"
@@ -100,9 +96,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="boat"
-              name="listing[category]" value="Boat" required
-              <%=listing.category==='Boat' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="boat"
+              name="listing[category]" value="Boat" <%= listing.category.includes('Boat') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="boat"
@@ -111,9 +106,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="ski-in-out"
-              name="listing[category]" value="Ski-in/out" required
-              <%=listing.category==='Ski-in-out' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="ski-in-out"
+              name="listing[category]" value="Ski-in-out" <%= listing.category.includes('Ski-in-out') || listing.category.includes('Ski-in/out') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="ski-in-out"
@@ -122,9 +116,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="apartment"
-              name="listing[category]" value="Apartment" required
-              <%=listing.category==='Apartment' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="apartment"
+              name="listing[category]" value="Apartment" <%= listing.category.includes('Apartment') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="apartment"
@@ -133,9 +126,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="new"
-              name="listing[category]" value="New" required
-              <%=listing.category==='New' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="new"
+              name="listing[category]" value="New" <%= listing.category.includes('New') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="new"
@@ -144,9 +136,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="woodlands"
-              name="listing[category]" value="Woodlands" required
-              <%=listing.category==='Woodlands' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="woodlands"
+              name="listing[category]" value="Woodlands" <%= listing.category.includes('Woodlands') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="woodlands"
@@ -155,9 +146,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="lake"
-              name="listing[category]" value="Lake" required
-              <%=listing.category==='Lake' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="lake"
+              name="listing[category]" value="Lake" <%= listing.category.includes('Lake') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="lake"
@@ -168,9 +158,8 @@
           </div>
           <div class="col-md-6">
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="amazing-pools"
-              name="listing[category]" value="Amazing-Pools" required
-              <%=listing.category==='Amazing-Pools' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="amazing-pools"
+              name="listing[category]" value="Amazing-Pools" <%= listing.category.includes('Amazing-Pools') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="amazing-pools"
@@ -179,9 +168,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="cabins"
-              name="listing[category]" value="Cabins" required
-              <%=listing.category==='Cabins' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="cabins"
+              name="listing[category]" value="Cabins" <%= listing.category.includes('Cabins') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="cabins"
@@ -190,9 +178,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="camping"
-              name="listing[category]" value="Camping" required
-              <%=listing.category==='Camping' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="camping"
+              name="listing[category]" value="Camping" <%= listing.category.includes('Camping') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="camping"
@@ -201,9 +188,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="farm"
-              name="listing[category]" value="Farm" required
-              <%=listing.category==='Farm' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="farm"
+              name="listing[category]" value="Farm" <%= listing.category.includes('Farm') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="farm"
@@ -212,9 +198,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="arctic"
-              name="listing[category]" value="Arctic" required
-              <%=listing.category==='Arctic' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="arctic"
+              name="listing[category]" value="Arctic" <%= listing.category.includes('Arctic') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="arctic"
@@ -223,9 +208,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="beach"
-              name="listing[category]" value="Beach" required
-              <%=listing.category==='Beach' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="beach"
+              name="listing[category]" value="Beach" <%= listing.category.includes('Beach') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="beach"
@@ -234,9 +218,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="countryside"
-              name="listing[category]" value="Countryside" required
-              <%=listing.category==='Countryside' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="countryside"
+              name="listing[category]" value="Countryside" <%= listing.category.includes('Countryside') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="countryside"
@@ -246,10 +229,9 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio"
+              <input class="form-check-input" type="checkbox"
               id="bed-and-breakfasts" name="listing[category]"
-              value="Bed-and-Breakfasts" required
-              <%=listing.category==='Bed-and-Breakfasts' ? 'checked' : '' %>>
+              value="Bed-and-Breakfasts" <%= listing.category.includes('Bed-and-Breakfasts') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="bed-and-breakfasts"
@@ -258,9 +240,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="campsite"
-              name="listing[category]" value="Campsite" required
-              <%=listing.category==='Campsite' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="campsite"
+              name="listing[category]" value="Campsite" <%= listing.category.includes('Campsite') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="campsite"
@@ -269,9 +250,8 @@
               </label>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" id="historical-homes"
-              name="listing[category]" value="Historical-Homes" required
-              <%=listing.category==='Historical-Homes' ? 'checked' : '' %>>
+              <input class="form-check-input" type="checkbox" id="historical-homes"
+              name="listing[category]" value="Historical-Homes" <%= listing.category.includes('Historical-Homes') ? 'checked' : '' %>>
               <label
                 class="form-check-label d-flex align-items-center"
                 for="historical-homes"
@@ -281,7 +261,7 @@
             </div>
           </div>
         </div>
-        <div class="invalid-feedback">Choose Category</div>
+        <div class="invalid-feedback">Please choose at least one category.</div>
       </div>
 
       <div class="row">
