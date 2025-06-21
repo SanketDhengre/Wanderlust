@@ -134,7 +134,7 @@ You need to create a `.env` file in the root of the project and add the followin
 ATLASDB_URL=mongodb+srv://<user>:<password>@<cluster-url>/Wanderlust?retryWrites=true&w=majority
 
 # A secret key for signing the session ID cookie
-SECRET=asupersecretcode
+SECRET=yoursupersecretcode
 
 # Cloudinary Credentials
 CLOUD_NAME=<your_cloudinary_cloud_name>
