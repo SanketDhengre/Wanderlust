@@ -37,6 +37,11 @@ const listingSchema = new Schema({
     type: [String],
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["New", "Popular", "Featured", "Verified", "Regular"],
+    default: "Regular",
+  },
 });
 
 listingSchema.post("findOneAndDelete", async (listing) => {

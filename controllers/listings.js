@@ -232,3 +232,12 @@ module.exports.reserveListing = async (req, res) => {
   req.flash("success", "Reservation Details sent to your Email!");
   res.redirect(`/listings/${id}`);
 };
+
+module.exports.quickView = async (req, res) => {
+  const { id } = req.params;
+  const listing = await Listing.findById(id).populate("owner");
+  if (!listing) {
+    return res.status(404).json({ error: "Listing not found" });
+  }
+  res.json(listing);
+};

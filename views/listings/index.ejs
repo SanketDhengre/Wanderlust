@@ -1,7 +1,5 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
-<body>
-
   <div id="filter-wrapper">
     <button class="scroll-btn left-btn">
       <i class="fa-solid fa-less-than"></i>
@@ -157,44 +155,205 @@
   </div>
 
 
-  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-3">
     <% for(let listing of allListings) { %>
-    <a
-      href="/listings/<%= listing._id %>"
-      class="listing-link"
-      style="text-decoration: none"
-    >
       <div class="card listing-card col">
-        <img
-          src="<%= listing.image && listing.image.url ? listing.image.url : listing.image %>"
-          class="card-img-top"
-          alt="listing_image"
-          style="height: 20rem"
-        />
-        <div class="card-image-overlay"></div>
+        <!-- Badge -->
+        <% if (listing.status && listing.status !== 'Regular') { %>
+          <span class="badge listing-badge badge-<%= listing.status.toLowerCase() %>">
+            <%= listing.status %>
+          </span>
+        <% } %>
+
+        <div class="card-img-wrapper" style="position: relative; overflow: hidden; border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+          <!-- Heart / Favorite Icon -->
+          <div class="fav-icon-container">
+            <% const isFav = (typeof currUser !== 'undefined' && currUser && currUser.favorites && currUser.favorites.some(favId => favId.toString() === listing._id.toString())); %>
+            <div class="fav-btn <%= isFav ? 'favorited' : '' %>" data-id="<%= listing._id %>">
+              <i class="fa-<%= isFav ? 'solid' : 'regular' %> fa-heart"></i>
+            </div>
+          </div>
+
+          <!-- Carousel of Images -->
+          <img
+            src="<%= listing.image && listing.image.url ? listing.image.url : listing.image %>"
+            class="card-img-top"
+            alt="listing_image"
+            style="height: 20rem; object-fit: cover;"
+          />
+          
+          <div class="card-image-overlay">
+            <div class="overlay-content">
+              <h6 class="overlay-title"><%= listing.title %></h6>
+              <p class="overlay-price">&#8377;<%= listing.price.toLocaleString("en-IN") %> /night</p>
+              <button class="btn btn-light btn-sm quick-view-btn" data-id="<%= listing._id %>">
+                <i class="fa-solid fa-eye"></i> Quick View
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="card-body">
           <p class="card-text">
-            <b><%= listing.title %></b><br />
+            <b>
+              <a href="/listings/<%= listing._id %>" class="stretched-link text-decoration-none text-dark">
+                <%= listing.title %>
+              </a>
+            </b><br />
             &#8377;<%= listing.price.toLocaleString("en-IN") %> /night
             <i class="tax-info">&nbsp;&nbsp; +18% GST</i>
           </p>
         </div>
       </div>
-    </a>
     <% } %>
   </div>
 
-  <!-- <script>
-    let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-    taxSwitch.addEventListener("click", () => {
-      let taxInfo = document.getElementsByClassName("tax-info");
-      for (info of taxInfo) {
-        if (info.style.display != "inline") {
-          info.style.display = "inline";
-        } else {
-          info.style.display = "none";
-        }
-      }
+  <!-- Quick View Modal -->
+  <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 1.5rem; overflow: hidden;">
+        <div class="modal-header border-0 pb-0 position-absolute end-0 top-0" style="z-index: 10;">
+          <button type="button" class="btn-close bg-white rounded-circle p-2 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <!-- Spinner / Loader -->
+          <div id="modal-loader" class="spinner-container" style="min-height: 300px;">
+            <div class="spinner-ring"></div>
+          </div>
+          <!-- Modal Content Container -->
+          <div id="modal-content-area" class="d-none">
+            <div class="row g-0">
+              <div class="col-md-6">
+                <img id="qv-image" src="" alt="Listing Image" style="width: 100%; height: 350px; object-fit: cover;">
+              </div>
+              <div class="col-md-6 p-4 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span id="qv-badge" class="badge"></span>
+                  </div>
+                  <h3 id="qv-title" class="fw-bold mb-1" style="color: var(--text-main);"></h3>
+                  <p id="qv-owner" class="text-muted small mb-3"></p>
+                  <p id="qv-description" class="text-secondary" style="font-size: 0.95rem; line-height: 1.5; max-height: 120px; overflow-y: auto;"></p>
+                </div>
+                <div>
+                  <h4 class="fw-bold mb-3" style="color: var(--brand-color);">
+                    &#8377;<span id="qv-price"></span> <span class="text-muted" style="font-size: 0.85rem; font-weight: normal;">/ night</span>
+                  </h4>
+                  <p id="qv-location" class="text-secondary small mb-3">
+                    <i class="fa-solid fa-location-dot" style="color: var(--brand-color);"></i> <span></span>
+                  </p>
+                  <div class="d-grid">
+                    <a id="qv-link" href="" class="btn add-btn w-100 py-2">View Full Listing</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Handlers for Favorite Button
+      document.querySelectorAll(".fav-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const id = btn.getAttribute("data-id");
+          try {
+            const response = await fetch(`/listings/${id}/toggle-favorite`, {
+              method: "POST"
+            });
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success) {
+                const icon = btn.querySelector("i");
+                if (data.favorited) {
+                  btn.classList.add("favorited");
+                  icon.classList.add("fa-solid");
+                  icon.classList.remove("fa-regular");
+                } else {
+                  btn.classList.remove("favorited");
+                  icon.classList.remove("fa-solid");
+                  icon.classList.add("fa-regular");
+                }
+              } else {
+                alert(data.error || "Something went wrong.");
+              }
+            } else {
+              // Redirect to login if user is not logged in (handled by isLoggedIn middleware)
+              alert("Please log in to add listings to your favorites!");
+              window.location.href = "/login";
+            }
+          } catch (err) {
+            console.error("Error toggling favorite:", err);
+            alert("Please log in to add listings to your favorites!");
+            window.location.href = "/login";
+          }
+        });
+      });
+
+      // Handlers for Quick View
+      const qvModal = new bootstrap.Modal(document.getElementById('quickViewModal'));
+      const modalLoader = document.getElementById('modal-loader');
+      const modalContentArea = document.getElementById('modal-content-area');
+
+      document.querySelectorAll(".quick-view-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const id = btn.getAttribute("data-id");
+          
+          // Reset modal and show loader
+          modalContentArea.classList.add("d-none");
+          modalLoader.classList.remove("d-none");
+          qvModal.show();
+
+          try {
+            const response = await fetch(`/listings/${id}/quick-view`);
+            if (response.ok) {
+              const listing = await response.json();
+              
+              // Populate data
+              document.getElementById("qv-image").src = listing.image && listing.image.url ? listing.image.url : listing.image;
+              document.getElementById("qv-title").innerText = listing.title;
+              document.getElementById("qv-owner").innerHTML = `Hosted by <b>${listing.owner && listing.owner.username ? listing.owner.username : 'Owner'}</b>`;
+              document.getElementById("qv-description").innerText = listing.description || "No description provided.";
+              document.getElementById("qv-price").innerText = listing.price.toLocaleString("en-IN");
+              document.getElementById("qv-location").querySelector("span").innerText = `${listing.location}, ${listing.country}`;
+              document.getElementById("qv-link").href = `/listings/${listing._id}`;
+              
+              // Badge
+              const badge = document.getElementById("qv-badge");
+              if (listing.status && listing.status !== 'Regular') {
+                badge.innerText = listing.status;
+                badge.className = `badge mb-2 bg-danger`;
+                if (listing.status === 'New') badge.className = 'badge mb-2 bg-primary';
+                if (listing.status === 'Popular') badge.className = 'badge mb-2 bg-warning text-dark';
+                if (listing.status === 'Featured') badge.className = 'badge mb-2 bg-info text-dark';
+                if (listing.status === 'Verified') badge.className = 'badge mb-2 bg-success';
+                badge.style.display = 'inline-block';
+              } else {
+                badge.style.display = 'none';
+              }
+
+              // Hide loader, show content
+              modalLoader.classList.add("d-none");
+              modalContentArea.classList.remove("d-none");
+            } else {
+              alert("Error fetching listing details.");
+              qvModal.hide();
+            }
+          } catch (err) {
+            console.error("Error loading quick view:", err);
+            alert("Something went wrong while loading the quick view.");
+            qvModal.hide();
+          }
+        });
+      });
     });
-  </script> -->
-</body>
+  </script>

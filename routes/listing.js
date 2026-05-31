@@ -50,4 +50,9 @@ router.get(
   wrapAsync(listingController.reserveListing)
 );
 
+router.get(
+  "/:id/quick-view",
+  wrapAsync(listingController.quickView)
+);
+
 module.exports = router;

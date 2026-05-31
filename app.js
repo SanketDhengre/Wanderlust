@@ -3,8 +3,26 @@ if (process.env.NODE_ENV !== "production") {
 }
 const express = require("express");
 const app = express();
+
 const mongoose = require("mongoose");
 const path = require("path");
+
+if (process.env.NODE_ENV !== "production") {
+  const livereload = require("livereload");
+  const connectLiveReload = require("connect-livereload");
+  const liveReloadServer = livereload.createServer();
+  liveReloadServer.watch(path.join(__dirname, "public"));
+  liveReloadServer.watch(path.join(__dirname, "views"));
+  
+  app.use(connectLiveReload());
+  
+  liveReloadServer.server.once("connection", () => {
+    setTimeout(() => {
+      liveReloadServer.refresh("/");
+    }, 100);
+  });
+}
+
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
@@ -18,6 +36,7 @@ const User = require("./models/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+const favoriteRouter = require("./routes/favorites.js");
 
 // const MONGO_URL = "mongodb://127.0.0.1:27017/Wanderlust";
 
@@ -103,6 +122,7 @@ app.use((req, res, next) => {
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
+app.use("/", favoriteRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
