@@ -1,27 +1,35 @@
 :root {
-  /* Branded Color Palette */
-  --brand-color: #fe424d;
-  --brand-color-hover: #e0303a;
-  --brand-color-rgb: 254, 66, 77;
+  /* Golden Hour Joyful Luxury Color Palette */
+  --brand-color: #FF5A5F;      /* Sunset Coral - Primary action, joyful accent */
+  --brand-color-hover: #E0484D; /* Darker Coral */
+  --brand-color-gold: #FF7E67; /* Vibrant Mango for secondary accents */
+  --brand-color-rgb: 255, 90, 95;
   
-  --primary-color: #0f172a;    /* Slate 900 */
-  --secondary-color: #475569;  /* Slate 600 */
+  --primary-color: #0B2B40;    /* Deep Ocean Navy - Trust, luxury text */
+  --secondary-color: #1E3A5F;  /* Lighter Navy */
   --accent-color: #6366f1;     /* Indigo 500 */
   --success-color: #10b981;    /* Emerald 500 */
   --danger-color: #ef4444;     /* Red 500 */
-  
-  --bg-color: #ffffff;
-  --card-bg: #ffffff;
-  --border-color: #e2e8f0;     /* Slate 200 */
-  --text-main: #0f172a;
-  --text-muted: #64748b;       /* Slate 500 */
-  
+  --text-main: #0B2B40;
+  --text-muted: #6B7280;       /* Soft Ash */
+
+  --bg-color: #FCFAF8;         /* Sun-Bleached Sand - Warm background */
+  --bg-dark: #1E3A5F;          /* Deep Sea - for footer/contrast */
+  --card-bg: #FFFFFF;          /* Pure white for popping contrast */
+  --border-color: #EAE5DF;     /* Warm muted border */
+
+  /* Gradient Colors (Joyful) */
+  --gradient-ocean: linear-gradient(135deg, #FF5A5F 0%, #FF7E67 100%);
+  --gradient-gold: linear-gradient(135deg, #FF7E67 0%, #FFA781 100%);
+  --gradient-card: linear-gradient(to top, rgba(11, 43, 64, 0.8) 0%, transparent 100%);
+
   /* Typography System */
-  --font-main: "Plus Jakarta Sans", sans-serif;
-  
+  --font-main: "Montserrat", sans-serif;
+  --font-heading: "Playfair Display", serif;
+
   /* Animation Transitions */
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: all 0.15s ease-in-out;
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s ease-in-out;
   --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -128,8 +136,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
-  background-color: #f8fafc; /* Slate 50 */
+  padding: 3rem 1rem;
+  background-color: var(--bg-color); /* Sun-Bleached Sand */
   border-top: 1px solid var(--border-color);
   text-align: center;
   min-height: 8rem;
@@ -458,18 +466,36 @@ body {
 }
 
 .reserve-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 2rem;
   font-size: 1.1rem;
   font-weight: 600;
+  border-radius: 2.5rem;
+  transition: var(--transition-bounce) !important;
+}
+
+.reserve-btn.btn-hero {
+  background-color: var(--brand-color) !important;
+  border-color: var(--brand-color) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(255, 90, 95, 0.35);
+}
+
+.reserve-btn.btn-hero:hover {
+  background-color: var(--brand-color-hover) !important;
+  border-color: var(--brand-color-hover) !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(255, 90, 95, 0.5);
+}
+
+.reserve-btn:not(.btn-hero) {
   background-color: var(--success-color) !important;
   border-color: var(--success-color) !important;
   color: white !important;
-  transition: var(--transition-smooth) !important;
   border-radius: 0.5rem;
 }
 
-.reserve-btn:hover {
-  background-color: #059669 !important; /* Darker emerald */
+.reserve-btn:not(.btn-hero):hover {
+  background-color: #059669 !important;
   border-color: #059669 !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
@@ -959,8 +985,8 @@ body {
 }
 
 .auth-card .btn {
-  background-color: #fe424d;
-  border-color: #fe424d;
+  background-color: var(--brand-color);
+  border-color: var(--brand-color);
   color: white;
   padding: 0.75rem;
   font-size: 1rem;
@@ -969,9 +995,22 @@ body {
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
+.auth-card .btn.btn-hero {
+  border-radius: 2.5rem;
+  padding: 0.85rem 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(255, 90, 95, 0.3);
+  transition: var(--transition-bounce);
+}
+
 .auth-card .btn:hover {
-  background-color: #d3252f;
-  border-color: #d3252f;
+  background-color: var(--brand-color-hover);
+  border-color: var(--brand-color-hover);
+}
+
+.auth-card .btn.btn-hero:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 25px rgba(255, 90, 95, 0.45);
 }
 
 .auth-card .form-text { /* For "Already have an account? Login" type links */
@@ -1043,4 +1082,158 @@ body {
   animation: spin 1s linear infinite;
 }
 
+/* HERO SECTION */
+.hero-section {
+  width: 100%;
+  padding: 8rem 2rem;
+  background-image: linear-gradient(rgba(11, 43, 64, 0.2), rgba(11, 43, 64, 0.5)), url('https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+  background-size: cover;
+  background-position: center;
+  border-radius: 1.5rem;
+  margin: 1.5rem 0 3rem 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(11, 43, 64, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.hero-title {
+  color: #ffffff;
+  font-size: 4rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.hero-divider {
+  height: 3px;
+  width: 80px;
+  background: var(--brand-color);
+  margin: 1.5rem auto;
+  border-radius: 2px;
+}
+
+.hero-subtitle {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  font-family: var(--font-main);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.btn-hero {
+  background: var(--brand-color);
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border-radius: 2.5rem;
+  font-size: 1.1rem;
+  border: none;
+  transition: var(--transition-bounce);
+  box-shadow: 0 8px 20px rgba(255, 90, 95, 0.3);
+}
+
+.btn-hero:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(255, 90, 95, 0.5);
+  background: var(--brand-color-hover);
+}
+
+/* MAP STYLING */
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(11, 43, 64, 0.1);
+  border: 1px solid var(--border-color);
+}
+
+.map-click {
+  text-align: center;
+  margin-bottom: -1rem;
+}
+
+/* NAVBAR SCROLL EFFECT */
+.navbar.scrolled-gradient {
+  background: rgba(252, 250, 248, 0.92) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(11, 43, 64, 0.08);
+}
+
+/* LUXURY SECONDARY BUTTONS (Edit/Delete etc) */
+.btn-secondary-luxury {
+  background-color: var(--card-bg);
+  color: var(--primary-color) !important;
+  border: 1.5px solid var(--border-color);
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.75rem;
+  transition: var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-secondary-luxury:hover {
+  background-color: #f3ede6;
+  border-color: var(--secondary-color);
+  transform: translateY(-2px);
+  color: var(--primary-color) !important;
+}
+
+.btn-secondary-luxury.delete-btn {
+  color: var(--danger-color) !important;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.btn-secondary-luxury.delete-btn:hover {
+  background-color: #fef2f2;
+  border-color: var(--danger-color);
+  color: var(--danger-color) !important;
+}
+
+/* PULSE GOLD ANIMATION */
+@keyframes pulseGold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 90, 95, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 90, 95, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 90, 95, 0);
+  }
+}
+
+.pulse-gold {
+  animation: pulseGold 2s infinite;
+}
+
+/* FADE IN UP ANIMATION */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.45s ease-out forwards;
+}

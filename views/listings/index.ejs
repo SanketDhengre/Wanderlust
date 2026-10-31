@@ -1,5 +1,15 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
+  <!-- Luxury Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Discover Your<br>Next Escape</h1>
+      <div class="hero-divider"></div>
+      <p class="hero-subtitle">Experience the world's most premium vacation homes, luxury villas, and breathtaking stays.</p>
+      <a href="#filter-wrapper" class="btn btn-hero">Book Your Escape</a>
+    </div>
+  </div>
+
   <div id="filter-wrapper">
     <button class="scroll-btn left-btn">
       <i class="fa-solid fa-less-than"></i>
@@ -157,7 +167,7 @@
 
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-3">
     <% for(let listing of allListings) { %>
-      <div class="card listing-card col">
+      <div class="card listing-card col fade-in-up">
         <!-- Badge -->
         <% if (listing.status && listing.status !== 'Regular') { %>
           <span class="badge listing-badge badge-<%= listing.status.toLowerCase() %>">
@@ -186,7 +196,12 @@
             <div class="overlay-content">
               <h6 class="overlay-title"><%= listing.title %></h6>
               <p class="overlay-price">&#8377;<%= listing.price.toLocaleString("en-IN") %> /night</p>
-              <button class="btn btn-light btn-sm quick-view-btn" data-id="<%= listing._id %>">
+              <button class="btn btn-light btn-sm quick-view-btn" 
+                data-id="<%= listing._id %>"
+                data-title="<%= listing.title %>"
+                data-price="<%= listing.price %>"
+                data-image="<%= listing.image && listing.image.url ? listing.image.url : listing.image %>"
+                data-location="<%= listing.location %>, <%= listing.country %>">
                 <i class="fa-solid fa-eye"></i> Quick View
               </button>
             </div>
@@ -307,10 +322,28 @@
           e.stopPropagation();
 
           const id = btn.getAttribute("data-id");
+          const quickTitle = btn.getAttribute("data-title");
+          const quickPrice = btn.getAttribute("data-price");
+          const quickImage = btn.getAttribute("data-image");
+          const quickLocation = btn.getAttribute("data-location");
           
-          // Reset modal and show loader
-          modalContentArea.classList.add("d-none");
-          modalLoader.classList.remove("d-none");
+          // Pre-populate modal instantly from data attributes if available
+          if (quickTitle && quickImage) {
+            document.getElementById("qv-image").src = quickImage;
+            document.getElementById("qv-title").innerText = quickTitle;
+            document.getElementById("qv-owner").innerHTML = `Hosted by <b>Owner</b>`;
+            document.getElementById("qv-description").innerText = "Loading details...";
+            document.getElementById("qv-price").innerText = quickPrice ? Number(quickPrice).toLocaleString("en-IN") : "";
+            if (quickLocation) {
+              document.getElementById("qv-location").querySelector("span").innerText = quickLocation;
+            }
+            document.getElementById("qv-link").href = `/listings/${id}`;
+            modalLoader.classList.add("d-none");
+            modalContentArea.classList.remove("d-none");
+          } else {
+            modalContentArea.classList.add("d-none");
+            modalLoader.classList.remove("d-none");
+          }
           qvModal.show();
 
           try {
@@ -318,7 +351,7 @@
             if (response.ok) {
               const listing = await response.json();
               
-              // Populate data
+              // Populate complete data
               document.getElementById("qv-image").src = listing.image && listing.image.url ? listing.image.url : listing.image;
               document.getElementById("qv-title").innerText = listing.title;
               document.getElementById("qv-owner").innerHTML = `Hosted by <b>${listing.owner && listing.owner.username ? listing.owner.username : 'Owner'}</b>`;

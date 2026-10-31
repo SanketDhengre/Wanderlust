@@ -1,7 +1,17 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
-<div class="row">
-  <div class="alert alert-danger col-6 offset-3 mt-3" role="alert">
-    <p class="alert-heading"><%= message %></p>
+<div class="row mt-5 mb-5 justify-content-center">
+  <div class="col-md-8 col-lg-6 text-center">
+    <div class="card p-5 shadow-sm border-0 fade-in-up" style="border-radius: 1.5rem; background: var(--card-bg);">
+      <div class="mb-3">
+        <i class="fa-solid fa-circle-exclamation" style="font-size: 3.5rem; color: var(--brand-color);"></i>
+      </div>
+      <h2 style="font-family: var(--font-heading); color: var(--primary-color); font-weight: 700;">Oops, Something Went Wrong</h2>
+      <div class="hero-divider my-3"></div>
+      <p class="text-muted mb-4"><%= message %></p>
+      <div>
+        <a href="/listings" class="btn btn-hero">Return to Listings</a>
+      </div>
+    </div>
   </div>
 </div>
