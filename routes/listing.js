@@ -24,6 +24,11 @@ router.get("/new", isLoggedIn, listingController.renderNewForm);
 router.get("/filter/:id", wrapAsync(listingController.filter));
 router.get("/search", listingController.search);
 
+// GIS Spatial Routes
+router.get("/nearby", wrapAsync(listingController.nearby));
+router.get("/api/bbox", wrapAsync(listingController.bbox));
+router.get("/api/geojson", wrapAsync(listingController.getGeoJSON));
+
 router
   .route("/:id")
   .get(wrapAsync(listingController.showListing))

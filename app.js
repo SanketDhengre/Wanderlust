@@ -108,6 +108,7 @@ app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user; // make currentUser available in all templates
+  res.locals.mapToken = process.env.MAP_TOKEN;
   next();
 });
 

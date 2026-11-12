@@ -164,10 +164,61 @@
     </div>
   </div>
 
+  <!-- GIS & Spatial Controls Toolbar -->
+  <div class="gis-toolbar d-flex flex-wrap justify-content-between align-items-center my-3 p-3 bg-white rounded-4 shadow-sm border">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button id="btnNearMe" class="btn btn-outline-danger rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2">
+        <i class="fa-solid fa-location-crosshairs"></i> Stays Near Me
+      </button>
 
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-3">
+      <div class="input-group" style="width: auto;">
+        <span class="input-group-text bg-light border-end-0 text-muted" style="border-top-left-radius: 50rem; border-bottom-left-radius: 50rem;">
+          <i class="fa-solid fa-arrows-left-right"></i> Radius
+        </span>
+        <select id="selectRadius" class="form-select border-start-0" style="border-top-right-radius: 50rem; border-bottom-right-radius: 50rem; max-width: 130px;">
+          <option value="25" <%= (typeof userLocation !== 'undefined' && userLocation.radius == 25) ? 'selected' : '' %>>25 km</option>
+          <option value="50" <%= (typeof userLocation === 'undefined' || userLocation.radius == 50) ? 'selected' : '' %>>50 km</option>
+          <option value="100" <%= (typeof userLocation !== 'undefined' && userLocation.radius == 100) ? 'selected' : '' %>>100 km</option>
+          <option value="250" <%= (typeof userLocation !== 'undefined' && userLocation.radius == 250) ? 'selected' : '' %>>250 km</option>
+          <option value="500" <%= (typeof userLocation !== 'undefined' && userLocation.radius == 500) ? 'selected' : '' %>>500 km</option>
+          <option value="1000" <%= (typeof userLocation !== 'undefined' && userLocation.radius == 1000) ? 'selected' : '' %>>1000 km</option>
+        </select>
+      </div>
+
+      <% if (typeof userLocation !== 'undefined') { %>
+        <a href="/listings" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-2">
+          <i class="fa-solid fa-xmark"></i> Clear Filter
+        </a>
+      <% } %>
+    </div>
+
+    <div class="d-flex align-items-center gap-3 mt-2 mt-md-0">
+      <button id="btnToggleMap" class="btn btn-dark rounded-pill px-4 py-2 fw-semibold d-flex align-items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-map"></i> <span id="mapBtnText">Show Map</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Interactive Map Viewport (Search as I move the map) -->
+  <div id="gisMapWrapper" class="mb-4" style="display: none;">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+      <div id="interactiveMap" style="height: 480px; width: 100%;"></div>
+      <div class="map-overlay-controls position-absolute top-0 start-0 m-3 p-2 bg-white bg-opacity-90 rounded-3 shadow-sm d-flex align-items-center gap-2" style="z-index: 5;">
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" type="checkbox" id="checkSearchOnMove" checked>
+          <label class="form-check-label small fw-semibold" for="checkSearchOnMove">Search as I move the map</label>
+        </div>
+        <span id="mapLoadingSpinner" class="spinner-border spinner-border-sm text-danger d-none" role="status"></span>
+      </div>
+      <div class="position-absolute bottom-0 end-0 m-3 p-2 bg-dark bg-opacity-75 text-white rounded-pill px-3 small" style="z-index: 5;" id="mapStatsBadge">
+        Showing visible listings
+      </div>
+    </div>
+  </div>
+
+  <div id="listingsContainer" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-3">
     <% for(let listing of allListings) { %>
-      <div class="card listing-card col fade-in-up">
+      <div class="card listing-card col fade-in-up" data-id="<%= listing._id %>">
         <!-- Badge -->
         <% if (listing.status && listing.status !== 'Regular') { %>
           <span class="badge listing-badge badge-<%= listing.status.toLowerCase() %>">
@@ -176,6 +227,13 @@
         <% } %>
 
         <div class="card-img-wrapper" style="position: relative; overflow: hidden; border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+          <!-- Feature C: Distance Badge -->
+          <% if (typeof listing.distance !== 'undefined' && listing.distance !== null) { %>
+            <span class="distance-badge position-absolute" style="bottom: 10px; left: 10px; z-index: 2;">
+              <i class="fa-solid fa-location-dot text-danger"></i> <%= listing.distance < 1 ? Math.round(listing.distance * 1000) + ' m away' : listing.distance.toFixed(1) + ' km away' %>
+            </span>
+          <% } %>
+
           <!-- Heart / Favorite Icon -->
           <div class="fav-icon-container">
             <% const isFav = (typeof currUser !== 'undefined' && currUser && currUser.favorites && currUser.favorites.some(favId => favId.toString() === listing._id.toString())); %>
@@ -390,3 +448,11 @@
       });
     });
   </script>
+
+  <script>
+    const mapToken = "<%= typeof mapToken !== 'undefined' ? mapToken : '' %>";
+    <% if (typeof userLocation !== 'undefined') { %>
+      const userCenterCoords = [<%= userLocation.lng %>, <%= userLocation.lat %>];
+    <% } %>
+  </script>
+  <script src="/js/gis-map.js"></script>

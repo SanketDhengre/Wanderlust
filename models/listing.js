@@ -44,6 +44,8 @@ const listingSchema = new Schema({
   },
 });
 
+listingSchema.index({ geometry: "2dsphere" });
+
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing.reviews) {
     await Review.deleteMany({

@@ -246,3 +246,123 @@ module.exports.quickView = async (req, res) => {
   }
   res.json(listing);
 };
+
+// GIS Feature A & C: Nearby Search with distance calculation ($geoNear)
+module.exports.nearby = async (req, res) => {
+  const { lat, lng, radius = 50, format } = req.query;
+
+  const latitude = parseFloat(lat);
+  const longitude = parseFloat(lng);
+  const radiusKm = parseFloat(radius) || 50;
+
+  if (isNaN(latitude) || isNaN(longitude)) {
+    if (format === "json" || req.xhr || req.headers.accept?.includes("application/json")) {
+      return res.status(400).json({ error: "Invalid coordinates provided" });
+    }
+    req.flash("error", "Invalid location coordinates provided!");
+    return res.redirect("/listings");
+  }
+
+  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+    if (format === "json" || req.xhr || req.headers.accept?.includes("application/json")) {
+      return res.status(400).json({ error: "Coordinates out of bounds (-90 to 90 lat, -180 to 180 lng)" });
+    }
+    req.flash("error", "Coordinates out of valid geographical bounds!");
+    return res.redirect("/listings");
+  }
+
+  const allListings = await Listing.aggregate([
+    {
+      $geoNear: {
+        near: { type: "Point", coordinates: [longitude, latitude] },
+        distanceField: "distance",
+        distanceMultiplier: 0.001, // Convert meters to km
+        maxDistance: radiusKm * 1000, // Maximum distance in meters
+        spherical: true,
+      },
+    },
+    { $sort: { distance: 1 } },
+  ]);
+
+  if (format === "json" || req.xhr || req.headers.accept?.includes("application/json")) {
+    return res.json({
+      listings: allListings,
+      count: allListings.length,
+      center: { lat: latitude, lng: longitude },
+      radius: radiusKm,
+    });
+  }
+
+  if (allListings.length === 0) {
+    req.flash("error", `No listings found within ${radiusKm} km of your location.`);
+    return res.redirect("/listings");
+  }
+
+  res.locals.success = `Found ${allListings.length} stay${allListings.length === 1 ? "" : "s"} within ${radiusKm} km!`;
+  res.render("listings/index.ejs", {
+    allListings,
+    userLocation: { lat: latitude, lng: longitude, radius: radiusKm },
+  });
+};
+
+// GIS Feature B: "Search as I move the map" (Bounding Box Viewport GIS $geoWithin)
+module.exports.bbox = async (req, res) => {
+  const { swLng, swLat, neLng, neLat, format } = req.query;
+
+  const swLngNum = parseFloat(swLng);
+  const swLatNum = parseFloat(swLat);
+  const neLngNum = parseFloat(neLng);
+  const neLatNum = parseFloat(neLat);
+
+  if (isNaN(swLngNum) || isNaN(swLatNum) || isNaN(neLngNum) || isNaN(neLatNum)) {
+    if (format === "json" || req.xhr || req.headers.accept?.includes("application/json")) {
+      return res.status(400).json({ error: "Invalid bounding box coordinates" });
+    }
+    req.flash("error", "Invalid bounding box coordinates!");
+    return res.redirect("/listings");
+  }
+
+  const allListings = await Listing.find({
+    geometry: {
+      $geoWithin: {
+        $box: [
+          [swLngNum, swLatNum],
+          [neLngNum, neLatNum],
+        ],
+      },
+    },
+  });
+
+  if (format === "json" || req.xhr || req.headers.accept?.includes("application/json")) {
+    return res.json({
+      listings: allListings,
+      count: allListings.length,
+      bbox: { swLng: swLngNum, swLat: swLatNum, neLng: neLngNum, neLat: neLatNum },
+    });
+  }
+
+  res.render("listings/index.ejs", { allListings });
+};
+
+// GeoJSON API for Mapbox FeatureCollection
+module.exports.getGeoJSON = async (req, res) => {
+  const listings = await Listing.find({});
+  const featureCollection = {
+    type: "FeatureCollection",
+    features: listings.map((l) => ({
+      type: "Feature",
+      geometry: l.geometry,
+      properties: {
+        id: l._id,
+        title: l.title,
+        price: l.price,
+        location: l.location,
+        country: l.country,
+        image: l.image && l.image.url ? l.image.url : l.image,
+        category: l.category,
+        status: l.status,
+      },
+    })),
+  };
+  res.json(featureCollection);
+};
