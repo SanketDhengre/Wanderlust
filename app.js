@@ -59,6 +59,7 @@ async function main() {
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
@@ -130,6 +131,10 @@ app.use("/api/webhooks", webhookRouter);
 // Error handling middleware
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Some Error Occured!" } = err;
+  if (req.xhr || req.headers.accept?.includes("application/json") || req.path.includes("/api/")) {
+    return res.status(statusCode).json({ error: message });
+  }
+  res.locals.currUser = req.user || null;
   res.status(statusCode).render("error.ejs", { message });
 });
 

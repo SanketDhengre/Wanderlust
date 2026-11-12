@@ -29,6 +29,9 @@ router.get("/nearby", wrapAsync(listingController.nearby));
 router.get("/api/bbox", wrapAsync(listingController.bbox));
 router.get("/api/geojson", wrapAsync(listingController.getGeoJSON));
 
+// Smart Price Estimator API Route
+router.post("/api/estimate-price", wrapAsync(listingController.estimatePrice));
+
 router
   .route("/:id")
   .get(wrapAsync(listingController.showListing))

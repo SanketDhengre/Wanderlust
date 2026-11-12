@@ -1,4 +1,5 @@
 const Listing = require("../models/listing");
+const { estimateListingPrice } = require("../utils/priceEstimator");
 
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapToken = process.env.MAP_TOKEN;
@@ -365,4 +366,51 @@ module.exports.getGeoJSON = async (req, res) => {
     })),
   };
   res.json(featureCollection);
+};
+
+// Smart Price Estimator API (Hybrid Random Forest + Spatial Neighborhood)
+module.exports.estimatePrice = async (req, res) => {
+  try {
+    const { country, location, category, coordinates } = req.body || {};
+
+    let resolvedCoords = null;
+    if (
+      Array.isArray(coordinates) &&
+      coordinates.length === 2 &&
+      !isNaN(coordinates[0]) &&
+      !isNaN(coordinates[1]) &&
+      (coordinates[0] !== 0 || coordinates[1] !== 0)
+    ) {
+      resolvedCoords = [parseFloat(coordinates[0]), parseFloat(coordinates[1])];
+    } else if (location || country) {
+      try {
+        const geoQuery = [location, country].filter(Boolean).join(", ");
+        const geoRes = await geoCodingClient
+          .forwardGeocode({
+            query: geoQuery,
+            limit: 1,
+          })
+          .send();
+        if (geoRes.body.features && geoRes.body.features.length > 0) {
+          resolvedCoords = geoRes.body.features[0].geometry.coordinates;
+        }
+      } catch (err) {
+        console.warn("Geocoding failed for price estimate:", err.message);
+      }
+    }
+
+    const result = await estimateListingPrice({
+      country,
+      location,
+      category,
+      coordinates: resolvedCoords,
+      ListingModel: Listing,
+    });
+
+    result.resolvedCoordinates = resolvedCoords;
+    res.json(result);
+  } catch (err) {
+    console.error("ESTIMATE ERROR STACK:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 };

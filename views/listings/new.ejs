@@ -356,20 +356,20 @@
       </div>
 
       <div class="row">
-        <div class="mb-3 col-md-4">
-          <label for="price" class="form-label">Price:</label>
+        <div class="mb-3 col-md-6">
+          <label for="location" class="form-label">Location:</label>
           <input
-            name="listing[price]"
-            type="number"
+            name="listing[location]"
+            type="text"
             class="form-control"
-            placeholder="e.g. 1500"
+            placeholder="e.g. Malibu"
             required
           />
           <div class="valid-feedback">Looks good!</div>
           <div class="invalid-feedback">Please fill out this field</div>
         </div>
 
-        <div class="mb-3 col-md-8">
+        <div class="mb-3 col-md-6">
           <label for="country" class="form-label">Country:</label>
           <input
             name="listing[country]"
@@ -384,12 +384,12 @@
       </div>
 
       <div class="mb-3">
-        <label for="location" class="form-label">Location:</label>
+        <label for="price" class="form-label">Price (&#8377; / night):</label>
         <input
-          name="listing[location]"
-          type="text"
+          name="listing[price]"
+          type="number"
           class="form-control"
-          placeholder="e.g. Malibu"
+          placeholder="e.g. 1500"
           required
         />
         <div class="valid-feedback">Looks good!</div>
@@ -402,3 +402,4 @@
     <br />
   </div>
 </div>
+<script src="/js/price-estimator.js"></script>
