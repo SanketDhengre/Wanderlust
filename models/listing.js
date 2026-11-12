@@ -39,7 +39,7 @@ const listingSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["New", "Popular", "Featured", "Verified", "Regular"],
+    enum: ["New", "Popular", "Featured", "Verified", "Regular", "Rejected"],
     default: "Regular",
   },
 });

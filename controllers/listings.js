@@ -39,7 +39,10 @@ module.exports.createListing = async (req, res, next) => {
   const newListing = new Listing(req.body.listing);
   newListing.owner = req.user._id; // Set the owner to the currently logged-in user
   newListing.image = { url, filename }; // Set the image URL and filename
-  newListing.geometry = response.body.features[0].geometry;
+  newListing.geometry =
+    response.body.features && response.body.features.length > 0
+      ? response.body.features[0].geometry
+      : { type: "Point", coordinates: [0, 0] };
   let savedListing = await newListing.save();
   console.log(savedListing);
   req.flash("success", "New listing created successfully!");
@@ -54,8 +57,10 @@ module.exports.renderEditForm = async (req, res) => {
     return res.redirect("/listings");
   }
 
-  originalImageUrl = listing.image.url; // Store the original image URL
-  originalImageUrl = originalImageUrl.replace("/upload", "/upload/h_200"); // Adjust the URL for the original image size
+  let originalImageUrl = listing.image ? listing.image.url : "";
+  if (originalImageUrl && originalImageUrl.includes("/upload")) {
+    originalImageUrl = originalImageUrl.replace("/upload", "/upload/h_200");
+  }
 
   res.render("listings/edit", { listing, originalImageUrl });
 };
